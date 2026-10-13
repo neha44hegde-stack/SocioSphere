@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Add Expected Visitor";
+    Layout = "_ResidentLayout";
+}
+<h1 class="page-title">Add Expected Visitor</h1>
+<form method="post" class="card-ss p-4" style="max-width:620px;">
+  @Html.AntiForgeryToken()
+  <div asp-validation-summary="All" class="text-danger mb-2"></div>
+  <div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Name</label><input name="Name" class="form-control" required /></div>
+    <div class="col-md-6"><label class="form-label">Phone</label><input name="Phone" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Date</label><input type="date" name="ExpectedDate" value="@Model.ExpectedDate.ToString("yyyy-MM-dd")" class="form-control" required /></div>
+    <div class="col-md-6"><label class="form-label">Time (optional)</label><input type="time" name="ExpectedTime" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Purpose</label><input name="Purpose" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Vehicle</label><input name="VehicleNumber" class="form-control" /></div>
+  </div>
+  <div class="mt-4"><button class="btn btn-accent">Add</button><a href="/Visitors/MyExpected" class="btn btn-outline-secondary ms-2">Cancel</a></div>
+</form>

@@ -1,0 +1,181 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+    var recentPayments = ViewBag.RecentPayments as List<SocioSphere.Core.Entities.Payment>;
+    var recentComplaints = ViewBag.RecentComplaints as List<SocioSphere.Core.Entities.Complaint>;
+    var recentNotices = ViewBag.RecentNotices as List<SocioSphere.Core.Entities.Notice>;
+    var recentVisitors = ViewBag.RecentVisitors as List<SocioSphere.Core.Entities.Visitor>;
+    var occupied = (int)ViewBag.Occupied;
+    var total = (int)ViewBag.TotalFlats;
+    var occupancyPct = total > 0 ? (occupied * 100 / total) : 0;
+}
+<div class="welcome-banner">
+  <div>
+    <h2>Society Dashboard</h2>
+    <p>Overview of Green Valley Residency · @DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")</p>
+  </div>
+  <div class="avatar">A</div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <span class="icon">🏢</span>
+    <div class="label">Total Flats</div>
+    <div class="value">@ViewBag.TotalFlats</div>
+    <div class="meta">@occupied occupied · @ViewBag.Vacant vacant</div>
+  </div>
+  <div class="stat-card accent">
+    <span class="icon">👥</span>
+    <div class="label">Residents</div>
+    <div class="value">@ViewBag.Residents</div>
+    <div class="meta">Active residents</div>
+  </div>
+  <div class="stat-card @(ViewBag.PendingBills > 0 ? "warn" : "accent")">
+    <span class="icon">🧾</span>
+    <div class="label">Pending Bills</div>
+    <div class="value">@ViewBag.PendingBills</div>
+    <div class="meta">Awaiting payment</div>
+  </div>
+  <div class="stat-card @(((decimal)ViewBag.Outstanding) > 0 ? "danger" : "accent")">
+    <span class="icon">💰</span>
+    <div class="label">Outstanding</div>
+    <div class="value">₹@(((decimal)ViewBag.Outstanding).ToString("N0"))</div>
+    <div class="meta">Total dues receivable</div>
+  </div>
+  <div class="stat-card @(ViewBag.OpenComplaints > 0 ? "warn" : "accent")">
+    <span class="icon">🛠️</span>
+    <div class="label">Open Complaints</div>
+    <div class="value">@ViewBag.OpenComplaints</div>
+    <div class="meta">@ViewBag.UrgentComplaints urgent</div>
+  </div>
+  <div class="stat-card info">
+    <span class="icon">🚶</span>
+    <div class="label">Today's Visitors</div>
+    <div class="value">@ViewBag.TodaysVisitors</div>
+    <div class="meta">Entries recorded today</div>
+  </div>
+  <div class="stat-card accent">
+    <span class="icon">📅</span>
+    <div class="label">Upcoming Bookings</div>
+    <div class="value">@ViewBag.UpcomingBookings</div>
+    <div class="meta">Amenity reservations</div>
+  </div>
+  <div class="stat-card">
+    <span class="icon">📈</span>
+    <div class="label">Occupancy</div>
+    <div class="value">@occupancyPct%</div>
+    <div class="meta">@occupied of @total flats</div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card-ss">
+      <div class="card-ss-header">
+        <span>💳 Recent Payments</span>
+        <a href="/Payments" class="btn btn-sm btn-outline-secondary">View All</a>
+      </div>
+      <div class="card-ss-body p-0">
+        @if (recentPayments == null || recentPayments.Count == 0) {
+          <div class="empty-state"><div class="icon-lg">💳</div><h5>No payments yet</h5><p>Payments will appear here once recorded.</p></div>
+        } else {
+          <table class="table-ss">
+            <thead><tr><th>Date</th><th>Flat</th><th class="text-end">Amount</th><th>Method</th></tr></thead>
+            <tbody>
+            @foreach (var p in recentPayments) {
+              <tr>
+                <td>@p.PaymentDate.ToString("dd MMM")</td>
+                <td><strong>@p.MaintenanceBill?.Flat?.FlatNumber</strong></td>
+                <td class="text-end"><strong>₹@p.Amount.ToString("N0")</strong></td>
+                <td><span class="badge bg-light text-dark">@p.Method</span></td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-ss">
+      <div class="card-ss-header">
+        <span>🛠️ Recent Complaints</span>
+        <a href="/Complaints" class="btn btn-sm btn-outline-secondary">View All</a>
+      </div>
+      <div class="card-ss-body p-0">
+        @if (recentComplaints == null || recentComplaints.Count == 0) {
+          <div class="empty-state"><div class="icon-lg">🛠️</div><h5>No complaints</h5><p>All clear — no complaints submitted.</p></div>
+        } else {
+          <table class="table-ss">
+            <thead><tr><th>Title</th><th>Flat</th><th>Priority</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var c in recentComplaints) {
+              <tr>
+                <td><strong>@c.Title</strong></td>
+                <td>@c.Flat?.FlatNumber</td>
+                <td><span class="badge bg-@(c.Priority == SocioSphere.Core.Enums.ComplaintPriority.URGENT ? "danger" : c.Priority == SocioSphere.Core.Enums.ComplaintPriority.HIGH ? "warning text-dark" : "secondary")">@c.Priority</span></td>
+                <td><span class="badge bg-light text-dark">@c.Status</span></td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-ss">
+      <div class="card-ss-header">
+        <span>📢 Recent Notices</span>
+        <a href="/Notices" class="btn btn-sm btn-outline-secondary">View All</a>
+      </div>
+      <div class="card-ss-body p-0">
+        @if (recentNotices == null || recentNotices.Count == 0) {
+          <div class="empty-state"><div class="icon-lg">📢</div><h5>No notices</h5><p>No active notices at the moment.</p></div>
+        } else {
+          @foreach (var n in recentNotices) {
+            <div class="px-4 py-3 border-bottom" style="border-color: var(--gray-border) !important;">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong>@n.Title</strong>
+                  <div class="small text-muted mt-1">@n.Category · @n.PublishedAt.ToString("dd MMM yyyy")</div>
+                </div>
+                <span class="badge bg-@(n.Priority == SocioSphere.Core.Enums.NoticePriority.URGENT ? "danger" : n.Priority == SocioSphere.Core.Enums.NoticePriority.HIGH ? "warning text-dark" : "secondary")">@n.Priority</span>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-ss">
+      <div class="card-ss-header">
+        <span>🚶 Recent Visitors</span>
+        <a href="/Visitors/History" class="btn btn-sm btn-outline-secondary">View All</a>
+      </div>
+      <div class="card-ss-body p-0">
+        @if (recentVisitors == null || recentVisitors.Count == 0) {
+          <div class="empty-state"><div class="icon-lg">🚶</div><h5>No visitors</h5><p>No visitor entries today.</p></div>
+        } else {
+          <table class="table-ss">
+            <thead><tr><th>Name</th><th>Flat</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var v in recentVisitors) {
+              <tr>
+                <td><strong>@v.Name</strong></td>
+                <td>@v.Flat?.FlatNumber</td>
+                <td>@v.Type</td>
+                <td><span class="badge bg-@(v.Status == SocioSphere.Core.Enums.VisitorStatus.CHECKED_IN ? "success" : "secondary")">@v.Status</span></td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+</div>

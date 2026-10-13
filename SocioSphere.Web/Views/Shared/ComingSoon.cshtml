@@ -1,0 +1,16 @@
+@{
+    if (User.IsInRole("Admin")) Layout = "_AdminLayout";
+    else if (User.IsInRole("Resident")) Layout = "_ResidentLayout";
+    else if (User.IsInRole("Security")) Layout = "_SecurityLayout";
+    else Layout = "_Layout";
+    var title = ViewBag.PageTitle as string ?? "Module";
+    ViewData["Title"] = title;
+}
+<h1 class="page-title">@title</h1>
+<div class="card-ss">
+  <div class="card-ss-body empty-state">
+    <div style="font-size:2rem;">🚧</div>
+    <h5 class="mt-2 mb-1">@title — Coming Soon</h5>
+    <p class="mb-0">This module is part of the SocioSphere roadmap and will be built next.</p>
+  </div>
+</div>

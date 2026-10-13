@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Notices";
+    Layout = "_ResidentLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Notice>;
+}
+<h1 class="page-title">Notices</h1>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-3">
+    <select name="category" class="form-select">
+      <option value="">— All Categories —</option>
+      @foreach (var c in Enum.GetValues<SocioSphere.Core.Enums.NoticeCategory>())
+      { <option value="@c" selected="@(ViewBag.Category?.ToString() == c.ToString())">@c</option> }
+    </select>
+  </div>
+  <div class="col-md-3"><button class="btn btn-outline-secondary w-100">Filter</button></div>
+</form>
+
+@if (list == null || list.Count == 0) {
+  <div class="card-ss"><div class="card-ss-body empty-state">No active notices.</div></div>
+} else {
+  @foreach (var n in list) {
+    <div class="card-ss mb-3">
+      <div class="card-ss-header d-flex justify-content-between">
+        <span>@n.Title</span>
+        <span class="badge bg-@(n.Priority == SocioSphere.Core.Enums.NoticePriority.URGENT ? "danger"
+              : n.Priority == SocioSphere.Core.Enums.NoticePriority.HIGH ? "warning text-dark" : "secondary")">@n.Priority</span>
+      </div>
+      <div class="card-ss-body">
+        <div class="small text-muted mb-2">@n.Category · @n.PublishedAt.ToString("dd MMM yyyy")</div>
+        <div style="white-space:pre-wrap;">@n.Content</div>
+        <div class="mt-2"><a href="/Notices/Details/@n.Id" class="btn btn-sm btn-outline-secondary">View</a></div>
+      </div>
+    </div>
+  }
+}

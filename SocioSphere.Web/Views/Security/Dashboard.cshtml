@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Security Dashboard";
+    Layout = "_SecurityLayout";
+    var expected = ViewBag.Expected as List<SocioSphere.Core.Entities.ExpectedVisitor>;
+    var checkedIn = ViewBag.CheckedIn as List<SocioSphere.Core.Entities.Visitor>;
+}
+<div class="welcome-banner">
+  <div>
+    <h2>Security Dashboard</h2>
+    <p>Gate status · @DateTime.UtcNow.ToString("dddd, dd MMMM yyyy")</p>
+  </div>
+  <div class="avatar">🛡️</div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card info">
+    <span class="icon">📋</span>
+    <div class="label">Expected Today</div>
+    <div class="value">@(expected?.Count ?? 0)</div>
+    <div class="meta">Pre-registered visitors</div>
+  </div>
+  <div class="stat-card accent">
+    <span class="icon">🚶</span>
+    <div class="label">Currently Inside</div>
+    <div class="value">@(checkedIn?.Count ?? 0)</div>
+    <div class="meta">Visitors on premises</div>
+  </div>
+  <div class="stat-card">
+    <span class="icon">📊</span>
+    <div class="label">Total Today</div>
+    <div class="value">@ViewBag.TodayCount</div>
+    <div class="meta">All visitor entries</div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card-ss">
+      <div class="card-ss-header">
+        <span>📋 Expected Visitors Today</span>
+        <a href="/Visitors/Expected" class="btn btn-sm btn-outline-secondary">View All</a>
+      </div>
+      <div class="card-ss-body p-0">
+        @if (expected == null || expected.Count == 0) {
+          <div class="empty-state"><div class="icon-lg">📋</div><h5>No expected visitors</h5><p>Residents haven't pre-registered anyone for today.</p></div>
+        } else {
+          <table class="table-ss">
+            <thead><tr><th>Name</th><th>Flat</th><th>Time</th></tr></thead>
+            <tbody>
+            @foreach (var v in expected) {
+              <tr>
+                <td><strong>@v.Name</strong></td>
+                <td>@v.Flat?.FlatNumber</td>
+                <td>@(v.ExpectedTime?.ToString(@"hh\:mm") ?? "—")</td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-ss">
+      <div class="card-ss-header">
+        <span>🚶 Currently Inside</span>
+        <a href="/Visitors/History" class="btn btn-sm btn-outline-secondary">History</a>
+      </div>
+      <div class="card-ss-body p-0">
+        @if (checkedIn == null || checkedIn.Count == 0) {
+          <div class="empty-state"><div class="icon-lg">🚶</div><h5>No visitors inside</h5><p>No active visitor entries at the moment.</p></div>
+        } else {
+          <table class="table-ss">
+            <thead><tr><th>Name</th><th>Flat</th><th>Entry</th></tr></thead>
+            <tbody>
+            @foreach (var v in checkedIn) {
+              <tr>
+                <td><strong>@v.Name</strong></td>
+                <td>@v.Flat?.FlatNumber</td>
+                <td>@v.EntryTime.ToString("hh:mm tt")</td>
+              </tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+  <a href="/Visitors/Register" class="btn btn-accent">+ Register Visitor Entry</a>
+  <a href="/Visitors/Expected" class="btn btn-outline-secondary">Expected Visitors</a>
+</div>

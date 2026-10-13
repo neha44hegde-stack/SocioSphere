@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "My Visitors";
+    Layout = "_ResidentLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Visitor>;
+}
+<h1 class="page-title">Visitors to My Flat</h1>
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state"><div class="icon-lg">🚶</div><h5>No visitors</h5><p>No visitor entries for your flat.</p></div>
+    } else {
+      <table class="table-ss mb-0">
+        <thead><tr><th>Name</th><th>Type</th><th>Entry</th><th>Exit</th><th>Status</th></tr></thead>
+        <tbody>
+        @foreach (var v in list) {
+          <tr><td>@v.Name</td><td>@v.Type</td><td>@v.EntryTime.ToString("dd MMM HH:mm")</td><td>@(v.ExitTime?.ToString("HH:mm") ?? "—")</td><td>@v.Status</td></tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

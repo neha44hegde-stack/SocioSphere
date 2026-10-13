@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Payments";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Payment>;
+    var flats = ViewBag.Flats as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+<h1 class="page-title">Payments</h1>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-2"><input type="date" name="from" value="@(ViewBag.From?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
+  <div class="col-md-2"><input type="date" name="to" value="@(ViewBag.To?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
+  <div class="col-md-3"><select name="flatId" class="form-select" asp-items="flats"><option value="">— All Flats —</option></select></div>
+  <div class="col-md-2">
+    <select name="method" class="form-select">
+      <option value="">— Method —</option>
+      @foreach (var m in Enum.GetValues<SocioSphere.Core.Enums.PaymentMethod>())
+      { <option value="@m" selected="@(ViewBag.Method?.ToString() == m.ToString())">@m</option> }
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="status" class="form-select">
+      <option value="">— Status —</option>
+      @foreach (var s in Enum.GetValues<SocioSphere.Core.Enums.PaymentStatus>())
+      { <option value="@s" selected="@(ViewBag.Status?.ToString() == s.ToString())">@s</option> }
+    </select>
+  </div>
+  <div class="col-md-1"><button class="btn btn-outline-secondary w-100">Go</button></div>
+</form>
+
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state">No payments recorded yet.</div>
+    } else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Date</th><th>Flat</th><th>Bill Month</th><th>Amount</th><th>Method</th><th>Ref</th><th>Status</th></tr></thead>
+        <tbody>
+        @foreach (var p in list) {
+          <tr>
+            <td>@p.PaymentDate.ToString("dd MMM yyyy")</td>
+            <td>@p.MaintenanceBill.Flat.FlatNumber</td>
+            <td>@p.MaintenanceBill.BillingMonth</td>
+            <td>₹@p.Amount.ToString("N0")</td>
+            <td>@p.Method</td>
+            <td>@p.TransactionReference</td>
+            <td><span class="badge bg-@(p.Status == SocioSphere.Core.Enums.PaymentStatus.SUCCESS ? "success" : p.Status == SocioSphere.Core.Enums.PaymentStatus.FAILED ? "danger" : "secondary")">@p.Status</span></td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

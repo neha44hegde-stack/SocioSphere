@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Maintenance Bills";
+    Layout = "_AdminLayout";
+    var bills = Model as List<SocioSphere.Core.Entities.MaintenanceBill>;
+    var flats = ViewBag.Flats as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">Maintenance Bills</h1>
+  <div>
+    <a href="/Bills/Generate" class="btn btn-outline-secondary">Generate Monthly</a>
+    <a href="/Bills/Create" class="btn btn-accent ms-1">+ New Bill</a>
+  </div>
+</div>
+
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-3"><input type="month" name="month" value="@ViewBag.Month" class="form-control" /></div>
+  <div class="col-md-3"><select name="flatId" class="form-select" asp-items="flats"><option value="">— All Flats —</option></select></div>
+  <div class="col-md-3">
+    <select name="status" class="form-select">
+      <option value="">— All Statuses —</option>
+      @foreach (var s in Enum.GetValues<SocioSphere.Core.Enums.BillStatus>())
+      { <option value="@s" selected="@(ViewBag.Status?.ToString() == s.ToString())">@s</option> }
+    </select>
+  </div>
+  <div class="col-md-3"><button class="btn btn-outline-secondary w-100">Filter</button></div>
+</form>
+
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (bills == null || bills.Count == 0) {
+      <div class="empty-state">No maintenance bills found.</div>
+    } else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Flat</th><th>Month</th><th>Total</th><th>Due</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var b in bills) {
+          var paid = b.Payments.Where(p => p.Status == SocioSphere.Core.Enums.PaymentStatus.SUCCESS).Sum(p => p.Amount);
+          <tr>
+            <td><strong>@b.Flat.FlatNumber</strong><div class="small text-muted">@b.Flat.Building.Name</div></td>
+            <td>@b.BillingMonth</td>
+            <td>₹@b.TotalAmount.ToString("N0") <div class="small text-muted">Paid ₹@paid.ToString("N0")</div></td>
+            <td>@b.DueDate.ToString("dd MMM yyyy")</td>
+            <td>
+              <span class="badge bg-@(b.Status == SocioSphere.Core.Enums.BillStatus.PAID ? "success"
+                  : b.Status == SocioSphere.Core.Enums.BillStatus.OVERDUE ? "danger"
+                  : b.Status == SocioSphere.Core.Enums.BillStatus.PARTIALLY_PAID ? "warning text-dark" : "secondary")">@b.Status</span>
+            </td>
+            <td class="text-end">
+              <a href="/Bills/Details/@b.Id" class="btn btn-sm btn-outline-secondary">View</a>
+              <a href="/Payments/Record?billId=@b.Id" class="btn btn-sm btn-accent">Record Payment</a>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

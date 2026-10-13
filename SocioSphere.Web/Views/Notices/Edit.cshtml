@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Edit Notice";
+    Layout = "_AdminLayout";
+}
+<h1 class="page-title">Edit Notice</h1>
+
+<form method="post" class="card-ss p-4" style="max-width:720px;">
+  @Html.AntiForgeryToken()
+  <input type="hidden" name="Id" value="@Model.Id" />
+
+  <div class="mb-3">
+    <label class="form-label">Title</label>
+    <input type="text" name="Title" value="@Model.Title" class="form-control" required maxlength="160" />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Content</label>
+    <textarea name="Content" rows="6" class="form-control" required>@Model.Content</textarea>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Category</label>
+      <select name="Category" class="form-select">
+        @foreach (var c in Enum.GetValues<SocioSphere.Core.Enums.NoticeCategory>())
+        { <option value="@c" selected="@(Model.Category == c)">@c</option> }
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Priority</label>
+      <select name="Priority" class="form-select">
+        @foreach (var p in Enum.GetValues<SocioSphere.Core.Enums.NoticePriority>())
+        { <option value="@p" selected="@(Model.Priority == p)">@p</option> }
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Expires On</label>
+      <input type="date" name="ExpiresAt" value="@(Model.ExpiresAt?.ToString("yyyy-MM-dd"))" class="form-control" />
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <button class="btn btn-accent">Save Changes</button>
+    <a href="/Notices" class="btn btn-outline-secondary ms-2">Cancel</a>
+  </div>
+</form>

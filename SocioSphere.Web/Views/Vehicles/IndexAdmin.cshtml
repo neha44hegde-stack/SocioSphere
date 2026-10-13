@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Vehicles";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Vehicle>;
+}
+<h1 class="page-title">All Vehicles</h1>
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) { <div class="empty-state">No vehicles registered.</div> }
+    else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Reg. No</th><th>Type</th><th>Model</th><th>Color</th><th>Flat</th><th>Active</th></tr></thead>
+        <tbody>
+        @foreach (var v in list) {
+          <tr><td><strong>@v.RegistrationNumber</strong></td><td>@v.Type</td><td>@v.Model</td><td>@v.Color</td><td>@v.Flat?.FlatNumber</td><td>@(v.IsActive ? "Yes" : "No")</td></tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SocioSphere.Core.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - SocioSphere</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/css/sociosphere.css" asp-append-version="true" />
+</head>
+<body>
+<nav class="navbar navbar-ss px-3 d-flex">
+  <a class="navbar-brand" href="/Resident/Dashboard"><span>●</span> SocioSphere <small class="text-muted ms-2" style="font-size:.75rem;">Resident</small></a>
+  <div class="ms-auto d-flex align-items-center">
+    <span class="text-light me-3 small">@User.Identity?.Name</span>
+    <form method="post" action="/Identity/Account/Logout" class="d-inline">
+      <button class="btn btn-sm btn-outline-light">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="/Resident/Dashboard">Dashboard</a>
+    <a href="/Resident/MyFlat">My Flat</a>
+    <div class="nav-section">Finance</div>
+    <a href="/Resident/Maintenance">Maintenance</a>
+    <a href="/Resident/Payments">Payments</a>
+    <div class="nav-section">Services</div>
+    <a href="/Resident/Complaints">Complaints</a>
+    <a href="/Resident/Notices">Notices</a>
+    <a href="/Resident/Amenities">Amenities</a>
+    <a href="/Resident/Visitors">Visitors</a>
+    <a href="/Resident/Vehicles">Vehicles</a>
+    <div class="nav-section">Account</div>
+    <a href="/Resident/Profile">Profile</a>
+  </aside>
+  <main class="main">
+    @RenderBody()
+  </main>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

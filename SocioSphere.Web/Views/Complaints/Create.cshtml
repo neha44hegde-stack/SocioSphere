@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "New Complaint";
+    Layout = "_ResidentLayout";
+}
+<h1 class="page-title">Submit a Complaint</h1>
+
+<form method="post" class="card-ss p-4" style="max-width:720px;">
+  @Html.AntiForgeryToken()
+  <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+  <div class="mb-3">
+    <label class="form-label">Title</label>
+    <input type="text" name="Title" value="@Model.Title" class="form-control" required maxlength="120" />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    <textarea name="Description" rows="5" class="form-control" required>@Model.Description</textarea>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">Category</label>
+      <select name="Category" class="form-select">
+        @foreach (var c in Enum.GetValues<SocioSphere.Core.Enums.ComplaintCategory>())
+        { <option value="@c">@c</option> }
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Priority</label>
+      <select name="Priority" class="form-select">
+        @foreach (var p in Enum.GetValues<SocioSphere.Core.Enums.ComplaintPriority>())
+        { <option value="@p" selected="@(p == SocioSphere.Core.Enums.ComplaintPriority.MEDIUM)">@p</option> }
+      </select>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <button class="btn btn-accent">Submit Complaint</button>
+    <a href="/Complaints/MyComplaints" class="btn btn-outline-secondary ms-2">Cancel</a>
+  </div>
+</form>

@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Staff";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Staff>;
+}
+<h1 class="page-title">Staff</h1>
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+<div class="card-ss mb-3">
+  <div class="card-ss-header">Add Staff</div>
+  <div class="card-ss-body">
+    <form method="post" action="/Staff/Create" class="row g-2">
+      @Html.AntiForgeryToken()
+      <div class="col-md-3"><input name="name" class="form-control" placeholder="Name" required /></div>
+      <div class="col-md-3"><select name="role" class="form-select">@foreach (var r in Enum.GetValues<SocioSphere.Core.Enums.StaffRole>()) { <option value="@r">@r</option> }</select></div>
+      <div class="col-md-2"><input name="phone" class="form-control" placeholder="Phone" /></div>
+      <div class="col-md-2"><input name="shift" class="form-control" placeholder="Shift" /></div>
+      <div class="col-md-2"><button class="btn btn-accent w-100">Add</button></div>
+    </form>
+  </div>
+</div>
+<div class="card-ss"><div class="card-ss-body p-0">
+  @if (list == null || list.Count == 0) { <div class="empty-state">No staff records.</div> }
+  else {
+    <table class="table table-ss mb-0"><thead><tr><th>Name</th><th>Role</th><th>Phone</th><th>Shift</th><th>Active</th><th></th></tr></thead><tbody>
+    @foreach (var s in list) {
+      <tr><td><strong>@s.Name</strong></td><td>@s.Role</td><td>@s.Phone</td><td>@s.Shift</td><td>@(s.IsActive ? "Yes" : "No")</td>
+      <td class="text-end"><form method="post" action="/Staff/Toggle" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@s.Id" /><button class="btn btn-sm btn-outline-secondary">@(s.IsActive ? "Deactivate" : "Activate")</button></form></td></tr>
+    }
+    </tbody></table>
+  }
+</div></div>

@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Visitor History";
+    Layout = User.IsInRole("Security") ? "_SecurityLayout" : "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Visitor>;
+    var flats = ViewBag.Flats as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">Visitor History</h1>
+  <a href="/Visitors/Register" class="btn btn-accent">+ Register Visitor</a>
+</div>
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-3"><select name="flatId" class="form-select" asp-items="flats"><option value="">— All Flats —</option></select></div>
+  <div class="col-md-3"><input type="date" name="from" value="@(ViewBag.From?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
+  <div class="col-md-3"><select name="type" class="form-select"><option value="">— Type —</option>
+    @foreach (var t in Enum.GetValues<SocioSphere.Core.Enums.VisitorType>()) { <option value="@t" selected="@(ViewBag.Type?.ToString()==t.ToString())">@t</option> }
+  </select></div>
+  <div class="col-md-3"><button class="btn btn-outline-secondary w-100">Filter</button></div>
+</form>
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state"><div class="icon-lg">🚶</div><h5>No visitor records</h5><p>Visitor entries will appear here.</p></div>
+    } else {
+      <table class="table-ss mb-0">
+        <thead><tr><th>Name</th><th>Flat</th><th>Type</th><th>Purpose</th><th>Entry</th><th>Exit</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var v in list) {
+          <tr>
+            <td><strong>@v.Name</strong><div class="small text-muted">@v.Phone</div></td>
+            <td>@v.Flat?.FlatNumber</td>
+            <td>@v.Type</td>
+            <td>@v.Purpose</td>
+            <td>@v.EntryTime.ToString("dd MMM HH:mm")</td>
+            <td>@(v.ExitTime?.ToString("HH:mm") ?? "—")</td>
+            <td><span class="badge bg-@(v.Status == SocioSphere.Core.Enums.VisitorStatus.CHECKED_IN ? "success" : "secondary")">@v.Status</span></td>
+            <td class="text-end">
+              @if (v.Status == SocioSphere.Core.Enums.VisitorStatus.CHECKED_IN) {
+                <form method="post" action="/Visitors/Checkout" class="d-inline">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="id" value="@v.Id" />
+                  <button class="btn btn-sm btn-outline-secondary">Checkout</button>
+                </form>
+              }
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

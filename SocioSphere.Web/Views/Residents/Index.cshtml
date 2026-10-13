@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Residents";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.ResidentProfile>;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">Residents</h1>
+  <a href="/Residents/Create" class="btn btn-accent">+ Add Resident</a>
+</div>
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-3"><input name="q" value="@ViewBag.Query" class="form-control" placeholder="Search name or flat" /></div>
+  <div class="col-md-2"><button class="btn btn-outline-secondary w-100">Search</button></div>
+</form>
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) { <div class="empty-state">No residents.</div> }
+    else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Flat</th><th>Relationship</th><th>Primary</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var r in list) {
+          <tr>
+            <td><strong>@r.User.Name</strong></td><td>@r.User.Email</td><td>@r.User.Phone</td>
+            <td>@r.Flat?.FlatNumber (@r.Flat?.Building?.Name)</td>
+            <td>@r.Relationship</td><td>@(r.IsPrimaryResident ? "Yes" : "—")</td>
+            <td class="text-end">
+              <form method="post" action="/Residents/Deactivate" class="d-inline" onsubmit="return confirm('Deactivate?');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@r.Id" />
+                <button class="btn btn-sm btn-outline-danger">Deactivate</button>
+              </form>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

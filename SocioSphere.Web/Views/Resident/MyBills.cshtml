@@ -1,0 +1,78 @@
+@{
+    ViewData["Title"] = "My Maintenance";
+    Layout = "_ResidentLayout";
+    var bills = Model as List<SocioSphere.Core.Entities.MaintenanceBill> ?? new();
+    var profile = ViewBag.Profile as SocioSphere.Core.Entities.ResidentProfile;
+    var outstanding = (decimal)(ViewBag.Outstanding ?? 0m);
+    var totalBilled = (decimal)(ViewBag.TotalBilled ?? 0m);
+    var totalPaid = (decimal)(ViewBag.TotalPaid ?? 0m);
+}
+<h1 class="page-title">My Maintenance</h1>
+
+@if (profile == null) {
+  <div class="card-ss"><div class="card-ss-body empty-state">
+    <div class="icon-lg">&#128196;</div><h5>No flat linked</h5><p>Contact the admin to link your account.</p>
+  </div></div>
+} else {
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="icon">&#127968;</span>
+      <div class="label">My Flat</div>
+      <div class="value">@profile.Flat.FlatNumber</div>
+      <div class="meta">Building @profile.Flat.Building.Name</div>
+    </div>
+    <div class="stat-card">
+      <span class="icon">&#128196;</span>
+      <div class="label">Total Billed</div>
+      <div class="value">&#8377;@totalBilled.ToString("N0")</div>
+      <div class="meta">Across @bills.Count bill(s)</div>
+    </div>
+    <div class="stat-card accent">
+      <span class="icon">&#128179;</span>
+      <div class="label">Total Paid</div>
+      <div class="value">&#8377;@totalPaid.ToString("N0")</div>
+      <div class="meta">All payments</div>
+    </div>
+    <div class="stat-card @(outstanding > 0 ? "danger" : "accent")">
+      <span class="icon">&#9888;&#65039;</span>
+      <div class="label">Outstanding</div>
+      <div class="value">&#8377;@outstanding.ToString("N0")</div>
+      <div class="meta">@(outstanding > 0 ? "Payment due" : "All clear")</div>
+    </div>
+  </div>
+
+  <div class="card-ss">
+    <div class="card-ss-header">Bill History</div>
+    <div class="card-ss-body p-0">
+      @if (bills.Count == 0) {
+        <div class="empty-state"><div class="icon-lg">&#128196;</div><h5>No bills yet</h5><p>Maintenance bills for your flat will appear here.</p></div>
+      } else {
+        <table class="table-ss">
+          <thead><tr><th>Month</th><th>Base</th><th>Water</th><th>Parking</th><th>Other</th><th>Late Fee</th><th>Total</th><th>Paid</th><th>Due Date</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+          @foreach (var b in bills) {
+            var paid = b.Payments.Where(p => p.Status == SocioSphere.Core.Enums.PaymentStatus.SUCCESS).Sum(p => p.Amount);
+            <tr>
+              <td><strong>@b.BillingMonth</strong></td>
+              <td>&#8377;@b.BaseMaintenance.ToString("N0")</td>
+              <td>&#8377;@b.WaterCharge.ToString("N0")</td>
+              <td>&#8377;@b.ParkingCharge.ToString("N0")</td>
+              <td>&#8377;@b.OtherCharge.ToString("N0")</td>
+              <td>&#8377;@b.LateFee.ToString("N0")</td>
+              <td><strong>&#8377;@b.TotalAmount.ToString("N0")</strong></td>
+              <td>&#8377;@paid.ToString("N0")</td>
+              <td>@b.DueDate.ToString("dd MMM yyyy")</td>
+              <td><span class="badge bg-@(b.Status == SocioSphere.Core.Enums.BillStatus.PAID ? "success" : b.Status == SocioSphere.Core.Enums.BillStatus.OVERDUE ? "danger" : b.Status == SocioSphere.Core.Enums.BillStatus.PARTIALLY_PAID ? "warning text-dark" : "secondary")">@b.Status</span></td>
+              <td class="text-end">
+                @if (b.Status != SocioSphere.Core.Enums.BillStatus.PAID) {
+                  <a href="/Payments/Pay?billId=@b.Id" class="btn btn-sm btn-accent">Pay Now</a>
+                }
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+}

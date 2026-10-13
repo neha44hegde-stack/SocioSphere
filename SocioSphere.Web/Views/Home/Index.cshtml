@@ -1,8 +1,45 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Welcome";
 }
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Housing Society Management</div>
+    <h1 class="hero-title">Welcome to <span>SocioSphere</span></h1>
+    <p class="hero-sub">One platform for residents, committee and security — bills, complaints, amenities, visitors, parking and more.</p>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+      <a href="/Home/Redirect" class="btn btn-accent btn-lg">Go to my dashboard →</a>
+    }
+    else
+    {
+      <a href="/Identity/Account/Login" class="btn btn-accent btn-lg">Log in</a>
+      <a href="/Identity/Account/Register" class="btn btn-outline-light btn-lg ms-2">Register</a>
+    }
+  </div>
+</div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container features">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="feature-card">
+        <div class="feature-icon">🏢</div>
+        <h5>For Residents</h5>
+        <p>View your flat, pay maintenance, raise complaints, book amenities and register visitors — all in one place.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h5>For Committee</h5>
+        <p>Manage buildings, flats, residents, bills, payments, complaints, notices and society expenses.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h5>For Security</h5>
+        <p>Register visitor entries, verify expected visitors, record exits and manage the gate — securely.</p>
+      </div>
+    </div>
+  </div>
 </div>

@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "My Expected Visitors";
+    Layout = "_ResidentLayout";
+    var list = Model as List<SocioSphere.Core.Entities.ExpectedVisitor>;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">My Expected Visitors</h1>
+  <a href="/Visitors/AddExpected" class="btn btn-accent">+ Add</a>
+</div>
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state"><div class="icon-lg">📋</div><h5>No expected visitors</h5><p>Add one to alert security.</p></div>
+    } else {
+      <table class="table-ss mb-0">
+        <thead><tr><th>Date</th><th>Time</th><th>Name</th><th>Purpose</th><th>Vehicle</th></tr></thead>
+        <tbody>
+        @foreach (var v in list) {
+          <tr><td>@v.ExpectedDate.ToString("dd MMM yyyy")</td><td>@(v.ExpectedTime?.ToString(@"hh\:mm") ?? "—")</td><td>@v.Name</td><td>@v.Purpose</td><td>@v.VehicleNumber</td></tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

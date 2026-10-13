@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "Pay Bill";
+    Layout = "_ResidentLayout";
+    var bill = ViewBag.Bill as SocioSphere.Core.Entities.MaintenanceBill;
+    var outstanding = (decimal)ViewBag.Outstanding;
+    var paid = (decimal)ViewBag.Paid;
+}
+<h1 class="page-title">Pay Maintenance Bill</h1>
+
+<div class="row g-3">
+  <div class="col-md-5">
+    <div class="card-ss">
+      <div class="card-ss-header">Bill Summary</div>
+      <div class="card-ss-body">
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Flat</span><strong>@bill.Flat.FlatNumber</strong></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Billing Month</span><span>@bill.BillingMonth</span></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Total</span><span>₹@bill.TotalAmount.ToString("N0")</span></div>
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Already Paid</span><span>₹@paid.ToString("N0")</span></div>
+        <hr />
+        <div class="d-flex justify-content-between"><strong>Outstanding</strong><strong class="text-danger" style="font-size:1.15rem;">₹@outstanding.ToString("N0")</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <form method="post" action="/Payments/Pay" class="card-ss p-4">
+      @Html.AntiForgeryToken()
+      <input type="hidden" name="MaintenanceBillId" value="@bill.Id" />
+      <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+      <div class="mb-3">
+        <label class="form-label">Amount ₹</label>
+        <input type="number" step="0.01" name="Amount" value="@Model.Amount" max="@outstanding" class="form-control" required />
+        <div class="small text-muted mt-1">Max payable: ₹@outstanding.ToString("N0")</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Payment Method</label>
+        <select name="Method" class="form-select">
+          @foreach (var m in Enum.GetValues<SocioSphere.Core.Enums.PaymentMethod>())
+          { <option value="@m">@m</option> }
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Transaction Reference</label>
+        <input type="text" name="TransactionReference" value="@Model.TransactionReference" class="form-control" placeholder="UPI ID, cheque no, bank ref…" />
+      </div>
+
+      <button class="btn btn-accent">Confirm Payment</button>
+      <a href="/Resident/MyBills" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+</div>

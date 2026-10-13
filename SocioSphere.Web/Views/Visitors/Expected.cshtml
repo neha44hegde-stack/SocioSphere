@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Expected Visitors";
+    Layout = User.IsInRole("Security") ? "_SecurityLayout" : "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.ExpectedVisitor>;
+}
+<h1 class="page-title">Expected Visitors</h1>
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state"><div class="icon-lg">📋</div><h5>No expected visitors</h5><p>Residents haven't pre-registered anyone.</p></div>
+    } else {
+      <table class="table-ss mb-0">
+        <thead><tr><th>Date</th><th>Time</th><th>Name</th><th>Flat</th><th>Purpose</th><th>Vehicle</th></tr></thead>
+        <tbody>
+        @foreach (var v in list) {
+          <tr><td>@v.ExpectedDate.ToString("dd MMM")</td><td>@(v.ExpectedTime?.ToString(@"hh\:mm") ?? "—")</td><td>@v.Name</td><td>@v.Flat?.FlatNumber</td><td>@v.Purpose</td><td>@v.VehicleNumber</td></tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

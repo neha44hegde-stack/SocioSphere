@@ -1,0 +1,43 @@
+@using Microsoft.AspNetCore.Identity
+@using SocioSphere.Core.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - SocioSphere Security</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/css/sociosphere.css" asp-append-version="true" />
+</head>
+<body>
+<nav class="navbar navbar-ss px-3 d-flex">
+  <a class="navbar-brand" href="/Security/Dashboard"><span>&#9679;</span> SocioSphere <small class="text-muted ms-2" style="font-size:.75rem;">Security</small></a>
+  <div class="ms-auto d-flex align-items-center">
+    <span class="text-light me-3 small">@User.Identity?.Name</span>
+    <form method="post" action="/Identity/Account/Logout" class="d-inline">
+      @Html.AntiForgeryToken()
+      <button class="btn btn-sm btn-outline-light">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="/Security/Dashboard">Dashboard</a>
+    <div class="nav-section">Visitors</div>
+    <a href="/Visitors/Expected">Expected Visitors</a>
+    <a href="/Visitors/Register">Visitor Entry</a>
+    <a href="/Visitors/History">Visitor History</a>
+    <div class="nav-section">Other</div>
+    <a href="/Security/Emergency">Emergency Contacts</a>
+    <a href="/Profile">Profile</a>
+  </aside>
+  <main class="main">
+    @RenderBody()
+  </main>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

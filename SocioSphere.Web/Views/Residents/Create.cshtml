@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Add Resident";
+    Layout = "_AdminLayout";
+    var flats = ViewBag.Flats as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+<h1 class="page-title">Add Resident</h1>
+<form method="post" class="card-ss p-4" style="max-width:720px;">
+  @Html.AntiForgeryToken()
+  <div asp-validation-summary="All" class="text-danger mb-2"></div>
+  <div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Full Name</label><input name="name" class="form-control" required /></div>
+    <div class="col-md-6"><label class="form-label">Email (login)</label><input type="email" name="email" class="form-control" required /></div>
+    <div class="col-md-6"><label class="form-label">Phone</label><input name="phone" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Password</label><input type="text" name="password" value="Pass@123" class="form-control" required /></div>
+    <div class="col-md-6"><label class="form-label">Flat</label><select name="flatId" class="form-select" asp-items="flats" required><option value="">— Select —</option></select></div>
+    <div class="col-md-6"><label class="form-label">Relationship</label><select name="relationship" class="form-select">
+      @foreach (var t in Enum.GetValues<SocioSphere.Core.Enums.RelationshipType>()) { <option value="@t">@t</option> }
+    </select></div>
+    <div class="col-md-6 form-check ms-2 mt-3"><input type="checkbox" name="isPrimary" value="true" class="form-check-input" /><label class="form-check-label">Primary Resident</label></div>
+  </div>
+  <div class="mt-4"><button class="btn btn-accent">Add Resident</button><a href="/Residents" class="btn btn-outline-secondary ms-2">Cancel</a></div>
+</form>

@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "My Dashboard";
+    Layout = "_ResidentLayout";
+    var profile = ViewBag.Profile as SocioSphere.Core.Entities.ResidentProfile;
+}
+<h1 class="page-title">Welcome, @ViewBag.UserName</h1>
+
+@if (profile == null) {
+  <div class="card-ss"><div class="card-ss-body empty-state">Your account is not linked to a flat yet. Contact the society admin.</div></div>
+} else {
+  <div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="stat-card"><div class="label">My Flat</div><div class="value">@profile.Flat.FlatNumber</div><div class="small text-muted">@profile.Flat.Building.Name · @profile.Flat.FlatType</div></div></div>
+    <div class="col-md-4"><div class="stat-card @(ViewBag.Outstanding > 0 ? "danger" : "accent")"><div class="label">Outstanding</div><div class="value">₹@(((decimal)ViewBag.Outstanding).ToString("N0"))</div></div></div>
+    <div class="col-md-4"><div class="stat-card"><div class="label">Open Complaints</div><div class="value">@((ViewBag.OpenComplaints as List<SocioSphere.Core.Entities.Complaint>)?.Count ?? 0)</div></div></div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card-ss">
+        <div class="card-ss-header">Current Bill</div>
+        <div class="card-ss-body">
+          @{ var cb = ViewBag.CurrentBill as SocioSphere.Core.Entities.MaintenanceBill; }
+          @if (cb == null) {
+            <div class="empty-state">No maintenance bills found.</div>
+          } else {
+            <div class="d-flex justify-content-between"><span>Billing Month</span><strong>@cb.BillingMonth</strong></div>
+            <div class="d-flex justify-content-between"><span>Total</span><strong>₹@cb.TotalAmount.ToString("N0")</strong></div>
+            <div class="d-flex justify-content-between"><span>Due Date</span><strong>@cb.DueDate.ToString("dd MMM yyyy")</strong></div>
+            <div class="d-flex justify-content-between"><span>Status</span><span class="badge bg-@(cb.Status == SocioSphere.Core.Enums.BillStatus.PAID ? "success" : cb.Status == SocioSphere.Core.Enums.BillStatus.OVERDUE ? "danger" : "warning text-dark")">@cb.Status</span></div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-ss">
+        <div class="card-ss-header">Last Payment</div>
+        <div class="card-ss-body">
+          @{ var lp = ViewBag.LastPayment as SocioSphere.Core.Entities.Payment; }
+          @if (lp == null) {
+            <div class="empty-state">No payments recorded.</div>
+          } else {
+            <div class="d-flex justify-content-between"><span>Amount</span><strong>₹@lp.Amount.ToString("N0")</strong></div>
+            <div class="d-flex justify-content-between"><span>Method</span><span>@lp.Method</span></div>
+            <div class="d-flex justify-content-between"><span>Date</span><span>@lp.PaymentDate.ToString("dd MMM yyyy")</span></div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-ss">
+        <div class="card-ss-header">Upcoming Bookings</div>
+        <div class="card-ss-body p-0">
+          @{ var ub = ViewBag.UpcomingBookings as List<SocioSphere.Core.Entities.AmenityBooking>; }
+          @if (ub == null || ub.Count == 0) {
+            <div class="empty-state">No upcoming bookings.</div>
+          } else {
+            <table class="table table-sm table-ss mb-0"><thead><tr><th>Amenity</th><th>Date</th><th>Time</th></tr></thead><tbody>
+            @foreach (var b in ub) {
+              <tr><td>@b.Amenity.Name</td><td>@b.BookingDate.ToString("dd MMM")</td><td>@b.StartTime-@b.EndTime</td></tr>
+            }
+            </tbody></table>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card-ss">
+        <div class="card-ss-header">Recent Notices</div>
+        <div class="card-ss-body p-0">
+          @{ var nts = ViewBag.Notices as List<SocioSphere.Core.Entities.Notice>; }
+          @if (nts == null || nts.Count == 0) {
+            <div class="empty-state">No active notices.</div>
+          } else {
+            <ul class="list-unstyled mb-0">
+            @foreach (var n in nts) {
+              <li class="px-3 py-2 border-bottom"><strong>@n.Title</strong><div class="small text-muted">@n.PublishedAt.ToString("dd MMM yyyy")</div></li>
+            }
+            </ul>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

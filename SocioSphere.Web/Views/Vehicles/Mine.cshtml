@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "My Vehicles";
+    Layout = "_ResidentLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Vehicle>;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">My Vehicles</h1>
+  <a href="/Vehicles/Add" class="btn btn-accent">+ Register Vehicle</a>
+</div>
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) { <div class="empty-state">No vehicles registered.</div> }
+    else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Reg. No</th><th>Type</th><th>Model</th><th>Color</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var v in list) {
+          <tr>
+            <td><strong>@v.RegistrationNumber</strong></td><td>@v.Type</td><td>@v.Model</td><td>@v.Color</td>
+            <td class="text-end">
+              <form method="post" action="/Vehicles/Deactivate" class="d-inline" onsubmit="return confirm('Remove vehicle?');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@v.Id" />
+                <button class="btn btn-sm btn-outline-danger">Remove</button>
+              </form>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

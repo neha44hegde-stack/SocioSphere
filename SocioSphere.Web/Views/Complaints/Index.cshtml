@@ -1,0 +1,67 @@
+@{
+    ViewData["Title"] = "Complaints";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Complaint>;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">Complaints</h1>
+</div>
+
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-3">
+    <select name="status" class="form-select">
+      <option value="">— Status —</option>
+      @foreach (var s in Enum.GetValues<SocioSphere.Core.Enums.ComplaintStatus>())
+      { <option value="@s" selected="@(ViewBag.Status?.ToString() == s.ToString())">@s</option> }
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="priority" class="form-select">
+      <option value="">— Priority —</option>
+      @foreach (var p in Enum.GetValues<SocioSphere.Core.Enums.ComplaintPriority>())
+      { <option value="@p" selected="@(ViewBag.Priority?.ToString() == p.ToString())">@p</option> }
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="category" class="form-select">
+      <option value="">— Category —</option>
+      @foreach (var c in Enum.GetValues<SocioSphere.Core.Enums.ComplaintCategory>())
+      { <option value="@c" selected="@(ViewBag.Category?.ToString() == c.ToString())">@c</option> }
+    </select>
+  </div>
+  <div class="col-md-3"><button class="btn btn-outline-secondary w-100">Filter</button></div>
+</form>
+
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state">No complaints submitted.</div>
+    } else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Title</th><th>Flat</th><th>Category</th><th>Priority</th><th>Status</th><th>Assigned</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var c in list) {
+          <tr>
+            <td><strong>@c.Title</strong><div class="small text-muted">@c.CreatedAt.ToString("dd MMM yyyy")</div></td>
+            <td>@c.Flat?.FlatNumber</td>
+            <td>@c.Category</td>
+            <td>
+              <span class="badge bg-@(c.Priority == SocioSphere.Core.Enums.ComplaintPriority.URGENT ? "danger"
+                  : c.Priority == SocioSphere.Core.Enums.ComplaintPriority.HIGH ? "warning text-dark" : "secondary")">@c.Priority</span>
+            </td>
+            <td>
+              <span class="badge bg-@(c.Status == SocioSphere.Core.Enums.ComplaintStatus.RESOLVED ? "success"
+                  : c.Status == SocioSphere.Core.Enums.ComplaintStatus.CLOSED ? "secondary"
+                  : c.Status == SocioSphere.Core.Enums.ComplaintStatus.IN_PROGRESS ? "info text-dark" : "warning text-dark")">@c.Status</span>
+            </td>
+            <td>@(c.AssignedStaff?.Name ?? "—")</td>
+            <td class="text-end"><a href="/Complaints/Details/@c.Id" class="btn btn-sm btn-outline-secondary">Open</a></td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

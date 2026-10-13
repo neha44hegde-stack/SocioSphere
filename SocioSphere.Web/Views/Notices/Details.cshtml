@@ -1,0 +1,26 @@
+@model SocioSphere.Core.Entities.Notice
+@{
+    ViewData["Title"] = "Notice";
+    Layout = User.IsInRole("Admin") ? "_AdminLayout" : "_ResidentLayout";
+}
+<div class="card-ss">
+  <div class="card-ss-header d-flex justify-content-between">
+    <span>@Model.Title</span>
+    <span class="badge bg-@(Model.Priority == SocioSphere.Core.Enums.NoticePriority.URGENT ? "danger"
+          : Model.Priority == SocioSphere.Core.Enums.NoticePriority.HIGH ? "warning text-dark" : "secondary")">@Model.Priority</span>
+  </div>
+  <div class="card-ss-body">
+    <div class="small text-muted mb-3">
+      @Model.Category · Published @Model.PublishedAt.ToString("dd MMM yyyy")
+      @if (Model.ExpiresAt.HasValue)
+      {
+        <span> · Expires @Model.ExpiresAt.Value.ToString("dd MMM yyyy")</span>
+      }
+    </div>
+    <div style="white-space:pre-wrap;">@Model.Content</div>
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="@(User.IsInRole("Admin") ? "/Notices" : "/Notices/Active")" class="btn btn-outline-secondary">← Back</a>
+</div>

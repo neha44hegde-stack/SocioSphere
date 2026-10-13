@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Register Vehicle";
+    Layout = "_ResidentLayout";
+}
+<h1 class="page-title">Register Vehicle</h1>
+<form method="post" class="card-ss p-4" style="max-width:620px;">
+  @Html.AntiForgeryToken()
+  <div asp-validation-summary="All" class="text-danger mb-2"></div>
+  <div class="mb-3"><label class="form-label">Registration Number</label><input name="RegistrationNumber" value="@Model.RegistrationNumber" class="form-control" required /></div>
+  <div class="mb-3"><label class="form-label">Type</label><select name="Type" class="form-select">
+    @foreach (var t in Enum.GetValues<SocioSphere.Core.Enums.ParkingType>()) { <option value="@t">@t</option> }
+  </select></div>
+  <div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Model</label><input name="Model" value="@Model.Model" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Color</label><input name="Color" value="@Model.Color" class="form-control" /></div>
+  </div>
+  <div class="mt-4"><button class="btn btn-accent">Register</button><a href="/Vehicles/Mine" class="btn btn-outline-secondary ms-2">Cancel</a></div>
+</form>

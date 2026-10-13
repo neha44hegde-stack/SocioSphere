@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Vendors";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Vendor>;
+}
+<h1 class="page-title">Vendors</h1>
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+<div class="card-ss mb-3">
+  <div class="card-ss-header">Add Vendor</div>
+  <div class="card-ss-body">
+    <form method="post" action="/Vendors/Create" class="row g-2">
+      @Html.AntiForgeryToken()
+      <div class="col-md-3"><input name="name" class="form-control" placeholder="Vendor name" required /></div>
+      <div class="col-md-3"><input name="service" class="form-control" placeholder="Service" /></div>
+      <div class="col-md-2"><input name="phone" class="form-control" placeholder="Phone" /></div>
+      <div class="col-md-2"><input name="email" class="form-control" placeholder="Email" /></div>
+      <div class="col-md-2"><button class="btn btn-accent w-100">Add</button></div>
+    </form>
+  </div>
+</div>
+<div class="card-ss"><div class="card-ss-body p-0">
+  @if (list == null || list.Count == 0) { <div class="empty-state">No vendors.</div> }
+  else {
+    <table class="table table-ss mb-0"><thead><tr><th>Name</th><th>Service</th><th>Phone</th><th>Email</th><th>Status</th><th></th></tr></thead><tbody>
+    @foreach (var v in list) {
+      <tr><td><strong>@v.Name</strong></td><td>@v.Service</td><td>@v.Phone</td><td>@v.Email</td>
+      <td><span class="badge bg-@(v.Status == SocioSphere.Core.Enums.VendorStatus.ACTIVE ? "success" : "secondary")">@v.Status</span></td>
+      <td class="text-end"><form method="post" action="/Vendors/Toggle" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@v.Id" /><button class="btn btn-sm btn-outline-secondary">Toggle</button></form></td></tr>
+    }
+    </tbody></table>
+  }
+</div></div>

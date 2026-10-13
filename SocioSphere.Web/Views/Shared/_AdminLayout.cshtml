@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using SocioSphere.Core.Entities
+@inject SignInManager<ApplicationUser> SignInManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>@ViewData["Title"] - SocioSphere Admin</title>
+  <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="~/css/sociosphere.css" asp-append-version="true" />
+</head>
+<body>
+<nav class="navbar navbar-ss px-3 d-flex">
+  <a class="navbar-brand" href="/Admin/Dashboard"><span>â—</span> SocioSphere <small class="text-muted ms-2" style="font-size:.75rem;">Admin</small></a>
+  <div class="ms-auto d-flex align-items-center">
+    <span class="text-light me-3 small">@User.Identity?.Name</span>
+    <form method="post" action="/Identity/Account/Logout" class="d-inline">
+      @Html.AntiForgeryToken()
+      <button class="btn btn-sm btn-outline-light">Logout</button>
+    </form>
+  </div>
+</nav>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="nav-section">Overview</div>
+    <a href="/Admin/Dashboard">Dashboard</a>
+    <div class="nav-section">Society</div>
+    <a href="/Buildings">Buildings &amp; Flats</a>
+    <a href="/Residents">Residents</a>
+    <a href="/Parking">Parking</a>
+    <a href="/Vehicles">Vehicles</a>
+    <div class="nav-section">Finance</div>
+    <a href="/Bills">Maintenance Bills</a>
+    <a href="/Payments">Payments</a>
+    <a href="/Expenses">Society Expenses</a>
+    <div class="nav-section">Services</div>
+    <a href="/Complaints">Complaints</a>
+    <a href="/Notices">Notices</a>
+    <a href="/Amenities">Amenities</a>
+    <a href="/Visitors/History">Visitors</a>
+    <div class="nav-section">Operations</div>
+    <a href="/Staff">Staff</a>
+    <a href="/Vendors">Vendors</a>
+    <a href="/Reports">Reports</a>
+    <a href="/Admin/Settings">Settings</a>
+  </aside>
+  <main class="main">
+    @RenderBody()
+  </main>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

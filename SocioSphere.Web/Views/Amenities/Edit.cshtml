@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Edit Amenity";
+    Layout = "_AdminLayout";
+}
+<h1 class="page-title">Edit Amenity</h1>
+<form method="post" class="card-ss p-4" style="max-width:720px;">
+  @Html.AntiForgeryToken()
+  <div asp-validation-summary="All" class="text-danger mb-2"></div>
+  <div class="mb-3"><label class="form-label">Name</label><input name="Name" value="@Model.Name" class="form-control" required /></div>
+  <div class="mb-3"><label class="form-label">Description</label><textarea name="Description" rows="2" class="form-control">@Model.Description</textarea></div>
+  <div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Capacity</label><input type="number" name="Capacity" value="@Model.Capacity" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Max Booking Minutes</label><input type="number" name="MaxBookingMinutes" value="@Model.MaxBookingMinutes" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Opening Time</label><input type="time" name="OpeningTime" value="@Model.OpeningTime.ToString(@"hh\:mm")" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Closing Time</label><input type="time" name="ClosingTime" value="@Model.ClosingTime.ToString(@"hh\:mm")" class="form-control" /></div>
+    <div class="col-md-6 form-check ms-2 mt-3"><input type="checkbox" name="IsActive" value="true" checked class="form-check-input" /><label class="form-check-label">Active</label></div>
+  </div>
+  <div class="mt-4"><button class="btn btn-accent">Save</button><a href="/Amenities" class="btn btn-outline-secondary ms-2">Cancel</a></div>
+</form>

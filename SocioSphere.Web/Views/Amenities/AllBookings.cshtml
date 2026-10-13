@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "All Bookings";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.AmenityBooking>;
+}
+<h1 class="page-title">All Amenity Bookings</h1>
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state">No bookings yet.</div>
+    } else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Amenity</th><th>Resident</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+        <tbody>
+        @foreach (var b in list) {
+          <tr>
+            <td>@b.Amenity.Name</td>
+            <td>@b.Resident.Name</td>
+            <td>@b.BookingDate.ToString("dd MMM yyyy")</td>
+            <td>@b.StartTime.ToString(@"hh\:mm") – @b.EndTime.ToString(@"hh\:mm")</td>
+            <td><span class="badge bg-secondary">@b.Status</span></td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

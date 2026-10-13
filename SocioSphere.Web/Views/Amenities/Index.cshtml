@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "Amenities";
+    Layout = User.IsInRole("Admin") ? "_AdminLayout" : "_ResidentLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Amenity>;
+    var isAdmin = User.IsInRole("Admin");
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">Amenities</h1>
+  @if (isAdmin) { <a href="/Amenities/Create" class="btn btn-accent">+ New Amenity</a> }
+</div>
+
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+
+@if (list == null || list.Count == 0) {
+  <div class="card-ss"><div class="card-ss-body empty-state">No amenities configured.</div></div>
+} else {
+  <div class="row g-3">
+  @foreach (var a in list) {
+    <div class="col-md-6 col-lg-4">
+      <div class="card-ss h-100">
+        <div class="card-ss-header d-flex justify-content-between">
+          <span>@a.Name</span>
+          <span class="badge bg-@(a.IsActive ? "success" : "secondary")">@(a.IsActive ? "Active" : "Inactive")</span>
+        </div>
+        <div class="card-ss-body">
+          <div class="small text-muted mb-2">@a.Description</div>
+          <div><strong>Capacity:</strong> @a.Capacity</div>
+          <div><strong>Open:</strong> @a.OpeningTime.ToString(@"hh\:mm") – @a.ClosingTime.ToString(@"hh\:mm")</div>
+          <div><strong>Max:</strong> @a.MaxBookingMinutes min</div>
+          <div class="mt-3">
+            @if (isAdmin) {
+              <a href="/Amenities/Edit/@a.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+              <form method="post" action="/Amenities/Toggle" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@a.Id" />
+                <button class="btn btn-sm btn-outline-secondary">@(a.IsActive ? "Deactivate" : "Activate")</button>
+              </form>
+            } else if (a.IsActive) {
+              <a href="/Amenities/Book/@a.Id" class="btn btn-sm btn-accent">Book</a>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  </div>
+}

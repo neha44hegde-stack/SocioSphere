@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Security Dashboard";
+    Layout = "_SecurityLayout";
+}
+<h1 class="page-title">Security Dashboard</h1>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="stat-card"><div class="label">Expected Today</div><div class="value">@((ViewBag.Expected as List<SocioSphere.Core.Entities.ExpectedVisitor>)?.Count ?? 0)</div></div></div>
+  <div class="col-md-4"><div class="stat-card accent"><div class="label">Currently Inside</div><div class="value">@((ViewBag.CheckedIn as List<SocioSphere.Core.Entities.Visitor>)?.Count ?? 0)</div></div></div>
+  <div class="col-md-4"><div class="stat-card"><div class="label">Total Today</div><div class="value">@ViewBag.TodayCount</div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card-ss">
+      <div class="card-ss-header">Expected Visitors Today</div>
+      <div class="card-ss-body p-0">
+        @{ var ex = ViewBag.Expected as List<SocioSphere.Core.Entities.ExpectedVisitor>; }
+        @if (ex == null || ex.Count == 0) {
+          <div class="empty-state">No expected visitors today.</div>
+        } else {
+          <table class="table table-sm table-ss mb-0"><thead><tr><th>Name</th><th>Flat</th><th>Time</th></tr></thead><tbody>
+          @foreach (var v in ex) {
+            <tr><td>@v.Name</td><td>@v.Flat?.FlatNumber</td><td>@(v.ExpectedTime?.ToString(@"hh\:mm") ?? "—")</td></tr>
+          }
+          </tbody></table>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card-ss">
+      <div class="card-ss-header">Currently Inside</div>
+      <div class="card-ss-body p-0">
+        @{ var ci = ViewBag.CheckedIn as List<SocioSphere.Core.Entities.Visitor>; }
+        @if (ci == null || ci.Count == 0) {
+          <div class="empty-state">No visitors currently inside.</div>
+        } else {
+          <table class="table table-sm table-ss mb-0"><thead><tr><th>Name</th><th>Flat</th><th>Entry</th></tr></thead><tbody>
+          @foreach (var v in ci) {
+            <tr><td>@v.Name</td><td>@v.Flat?.FlatNumber</td><td>@v.EntryTime.ToString("hh:mm tt")</td></tr>
+          }
+          </tbody></table>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-3">
+  <a href="/Security/VisitorEntry" class="btn btn-accent">+ Register Visitor Entry</a>
+  <a href="/Security/ExpectedVisitors" class="btn btn-outline-secondary ms-2">View All Expected</a>
+</div>

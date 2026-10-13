@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Parking";
+    Layout = "_AdminLayout";
+    var list = Model as List<SocioSphere.Core.Entities.ParkingSlot>;
+    var flats = ViewBag.Flats as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+<h1 class="page-title">Parking Slots</h1>
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+@if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+<div class="card-ss mb-3">
+  <div class="card-ss-header">Add Slot</div>
+  <div class="card-ss-body">
+    <form method="post" action="/Parking/Create" class="row g-2">
+      @Html.AntiForgeryToken()
+      <div class="col-md-4"><input name="slotNumber" class="form-control" placeholder="Slot e.g. P-10" required /></div>
+      <div class="col-md-4"><select name="type" class="form-select">
+        @foreach (var t in Enum.GetValues<SocioSphere.Core.Enums.ParkingType>()) { <option value="@t">@t</option> }
+      </select></div>
+      <div class="col-md-4"><button class="btn btn-accent w-100">Add Slot</button></div>
+    </form>
+  </div>
+</div>
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) { <div class="empty-state">No parking slots configured.</div> }
+    else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Slot</th><th>Type</th><th>Status</th><th>Flat</th><th>Vehicle</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var p in list) {
+          <tr>
+            <td><strong>@p.SlotNumber</strong></td>
+            <td>@p.Type</td>
+            <td><span class="badge bg-@(p.Status == SocioSphere.Core.Enums.ParkingStatus.ALLOCATED ? "success" : "secondary")">@p.Status</span></td>
+            <td>@p.Flat?.FlatNumber</td>
+            <td>@p.VehicleNumber</td>
+            <td class="text-end">
+              @if (p.Status == SocioSphere.Core.Enums.ParkingStatus.AVAILABLE) {
+                <form method="post" action="/Parking/Assign" class="d-inline">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="id" value="@p.Id" />
+                  <select name="flatId" class="form-select form-select-sm d-inline-block" style="width:auto;" asp-items="flats"><option value="">— Flat —</option></select>
+                  <input name="vehicleNumber" class="form-control form-control-sm d-inline-block" style="width:auto;" placeholder="Vehicle" />
+                  <button class="btn btn-sm btn-accent">Assign</button>
+                </form>
+              } else {
+                <form method="post" action="/Parking/Release" class="d-inline">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="id" value="@p.Id" />
+                  <button class="btn btn-sm btn-outline-secondary">Release</button>
+                </form>
+              }
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

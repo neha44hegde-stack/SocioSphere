@@ -1,0 +1,38 @@
+@using SocioSphere.Core.Entities
+@{
+    ViewData["Title"] = "Book Amenity";
+    Layout = "_ResidentLayout";
+    var a = ViewBag.Amenity as Amenity;
+    var vm = Model as AmenityBooking ?? new AmenityBooking { BookingDate = DateTime.Today.AddDays(1) };
+}
+@if (a == null) {
+  <div class="card-ss"><div class="card-ss-body empty-state">
+    <div class="icon-lg">⚠️</div>
+    <h5>Amenity not found</h5>
+    <p>This amenity is unavailable.</p>
+    <a href="/Amenities" class="btn btn-outline-secondary mt-3">Back</a>
+  </div></div>
+} else {
+  <h1 class="page-title">Book @a.Name</h1>
+  <p class="text-muted">Open @a.OpeningTime.ToString(@"hh\:mm") – @a.ClosingTime.ToString(@"hh\:mm"), max @a.MaxBookingMinutes minutes.</p>
+  <form method="post" class="card-ss p-4" style="max-width:620px;">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger mb-2"></div>
+    <div class="mb-3">
+      <label class="form-label">Date</label>
+      <input type="date" name="bookingDate" value="@vm.BookingDate.ToString("yyyy-MM-dd")" class="form-control" required />
+    </div>
+    <div class="row g-3">
+      <div class="col-md-6"><label class="form-label">Start Time</label><input type="time" name="startTime" class="form-control" required /></div>
+      <div class="col-md-6"><label class="form-label">End Time</label><input type="time" name="endTime" class="form-control" required /></div>
+    </div>
+    <div class="mb-3 mt-3">
+      <label class="form-label">Purpose</label>
+      <input name="purpose" class="form-control" maxlength="200" />
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-accent">Confirm Booking</button>
+      <a href="/Amenities" class="btn btn-outline-secondary ms-2">Cancel</a>
+    </div>
+  </form>
+}

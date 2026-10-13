@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+<h1 class="page-title">Society Dashboard</h1>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="stat-card"><div class="label">Total Flats</div><div class="value">@ViewBag.TotalFlats</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card accent"><div class="label">Occupied</div><div class="value">@ViewBag.Occupied</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card warn"><div class="label">Vacant</div><div class="value">@ViewBag.Vacant</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card"><div class="label">Residents</div><div class="value">@ViewBag.Residents</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card warn"><div class="label">Pending Bills</div><div class="value">@ViewBag.PendingBills</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card danger"><div class="label">Outstanding ₹</div><div class="value">@(((decimal)ViewBag.Outstanding).ToString("N0"))</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card warn"><div class="label">Open Complaints</div><div class="value">@ViewBag.OpenComplaints</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card danger"><div class="label">Urgent Complaints</div><div class="value">@ViewBag.UrgentComplaints</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card"><div class="label">Today's Visitors</div><div class="value">@ViewBag.TodaysVisitors</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card accent"><div class="label">Upcoming Bookings</div><div class="value">@ViewBag.UpcomingBookings</div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card-ss">
+      <div class="card-ss-header">Recent Payments</div>
+      <div class="card-ss-body p-0">
+        @{ var pays = ViewBag.RecentPayments as List<SocioSphere.Core.Entities.Payment>; }
+        @if (pays == null || pays.Count == 0) {
+          <div class="empty-state">No payments recorded yet.</div>
+        } else {
+          <table class="table table-sm table-ss mb-0">
+            <thead><tr><th>Date</th><th>Flat</th><th>Amount</th><th>Method</th></tr></thead>
+            <tbody>
+            @foreach (var p in pays) {
+              <tr><td>@p.PaymentDate.ToString("dd MMM")</td><td>@p.MaintenanceBill?.Flat?.FlatNumber</td><td>₹@p.Amount.ToString("N0")</td><td>@p.Method</td></tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card-ss">
+      <div class="card-ss-header">Recent Complaints</div>
+      <div class="card-ss-body p-0">
+        @{ var comps = ViewBag.RecentComplaints as List<SocioSphere.Core.Entities.Complaint>; }
+        @if (comps == null || comps.Count == 0) {
+          <div class="empty-state">No complaints submitted.</div>
+        } else {
+          <table class="table table-sm table-ss mb-0">
+            <thead><tr><th>Title</th><th>Flat</th><th>Priority</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var c in comps) {
+              <tr><td>@c.Title</td><td>@c.Flat?.FlatNumber</td><td>@c.Priority</td><td>@c.Status</td></tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card-ss">
+      <div class="card-ss-header">Recent Notices</div>
+      <div class="card-ss-body p-0">
+        @{ var nts = ViewBag.RecentNotices as List<SocioSphere.Core.Entities.Notice>; }
+        @if (nts == null || nts.Count == 0) {
+          <div class="empty-state">No active notices.</div>
+        } else {
+          <ul class="list-unstyled mb-0">
+          @foreach (var n in nts) {
+            <li class="px-3 py-2 border-bottom"><strong>@n.Title</strong><div class="small text-muted">@n.Category · @n.PublishedAt.ToString("dd MMM yyyy")</div></li>
+          }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card-ss">
+      <div class="card-ss-header">Recent Visitor Entries</div>
+      <div class="card-ss-body p-0">
+        @{ var vs = ViewBag.RecentVisitors as List<SocioSphere.Core.Entities.Visitor>; }
+        @if (vs == null || vs.Count == 0) {
+          <div class="empty-state">No visitors today.</div>
+        } else {
+          <table class="table table-sm table-ss mb-0">
+            <thead><tr><th>Name</th><th>Flat</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody>
+            @foreach (var v in vs) {
+              <tr><td>@v.Name</td><td>@v.Flat?.FlatNumber</td><td>@v.Type</td><td>@v.Status</td></tr>
+            }
+            </tbody>
+          </table>
+        }
+      </div>
+    </div>
+  </div>
+</div>

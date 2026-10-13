@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "_AdminLayout";
+}
+<h1 class="page-title">Society Reports</h1>
+<div class="row g-3 mb-3">
+  <div class="col-md-3"><div class="stat-card"><div class="label">Total Billed</div><div class="value">₹@(((decimal)ViewBag.TotalBilled).ToString("N0"))</div><div class="small text-muted">@ViewBag.BillCount bills</div></div></div>
+  <div class="col-md-3"><div class="stat-card accent"><div class="label">Total Collected</div><div class="value">₹@(((decimal)ViewBag.TotalCollected).ToString("N0"))</div><div class="small text-muted">@ViewBag.PaymentCount payments</div></div></div>
+  <div class="col-md-3"><div class="stat-card danger"><div class="label">Outstanding</div><div class="value">₹@(((decimal)ViewBag.Outstanding).ToString("N0"))</div></div></div>
+  <div class="col-md-3"><div class="stat-card warn"><div class="label">Total Expenses</div><div class="value">₹@(((decimal)ViewBag.TotalExpenses).ToString("N0"))</div><div class="small text-muted">@ViewBag.ExpenseCount items</div></div></div>
+</div>
+<div class="card-ss"><div class="card-ss-body">
+  <div class="d-flex justify-content-between mb-2"><span>Net (Collected − Expenses)</span><strong>₹@((((decimal)ViewBag.TotalCollected) - ((decimal)ViewBag.TotalExpenses)).ToString("N0"))</strong></div>
+  <div class="d-flex justify-content-between"><span>Collection Rate</span><strong>@(ViewBag.TotalBilled > 0 ? (((decimal)ViewBag.TotalCollected / (decimal)ViewBag.TotalBilled) * 100).ToString("N1") : "0")%</strong></div>
+</div></div>

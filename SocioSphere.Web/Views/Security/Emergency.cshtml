@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "Emergency Contacts";
+    Layout = "_SecurityLayout";
+    var staff = ViewBag.Staff as List<SocioSphere.Core.Entities.Staff> ?? new();
+}
+<h1 class="page-title">Emergency Contacts</h1>
+
+<div class="stat-grid">
+  <div class="stat-card danger">
+    <span class="icon">&#128680;</span>
+    <div class="label">Police</div>
+    <div class="value" style="font-size:1.3rem;">100</div>
+  </div>
+  <div class="stat-card danger">
+    <span class="icon">&#128658;</span>
+    <div class="label">Fire</div>
+    <div class="value" style="font-size:1.3rem;">101</div>
+  </div>
+  <div class="stat-card danger">
+    <span class="icon">&#128657;</span>
+    <div class="label">Ambulance</div>
+    <div class="value" style="font-size:1.3rem;">108</div>
+  </div>
+</div>
+
+<div class="card-ss">
+  <div class="card-ss-header">Society Staff &amp; Committee</div>
+  <div class="card-ss-body p-0">
+    @if (staff.Count == 0) {
+      <div class="empty-state"><div class="icon-lg">&#128222;</div><h5>No contacts yet</h5><p>Staff contacts will appear here.</p></div>
+    } else {
+      <table class="table-ss">
+        <thead><tr><th>Name</th><th>Role</th><th>Shift</th><th>Phone</th></tr></thead>
+        <tbody>
+        @foreach (var s in staff) {
+          <tr>
+            <td><strong>@s.Name</strong></td>
+            <td>@s.Role</td>
+            <td>@s.Shift</td>
+            <td><a href="tel:@s.Phone">@s.Phone</a></td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

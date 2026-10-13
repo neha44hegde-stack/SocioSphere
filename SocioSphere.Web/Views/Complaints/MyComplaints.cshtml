@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "My Complaints";
+    Layout = "_ResidentLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Complaint>;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="page-title mb-0">My Complaints</h1>
+  <a href="/Complaints/Create" class="btn btn-accent">+ New Complaint</a>
+</div>
+
+@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+
+<div class="card-ss">
+  <div class="card-ss-body p-0">
+    @if (list == null || list.Count == 0) {
+      <div class="empty-state">No complaints submitted yet.</div>
+    } else {
+      <table class="table table-ss mb-0">
+        <thead><tr><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Date</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var c in list) {
+          <tr>
+            <td><strong>@c.Title</strong></td>
+            <td>@c.Category</td>
+            <td>
+              <span class="badge bg-@(c.Priority == SocioSphere.Core.Enums.ComplaintPriority.URGENT ? "danger"
+                  : c.Priority == SocioSphere.Core.Enums.ComplaintPriority.HIGH ? "warning text-dark" : "secondary")">@c.Priority</span>
+            </td>
+            <td>
+              <span class="badge bg-@(c.Status == SocioSphere.Core.Enums.ComplaintStatus.RESOLVED ? "success"
+                  : c.Status == SocioSphere.Core.Enums.ComplaintStatus.CLOSED ? "secondary"
+                  : c.Status == SocioSphere.Core.Enums.ComplaintStatus.IN_PROGRESS ? "info text-dark" : "warning text-dark")">@c.Status</span>
+            </td>
+            <td>@c.CreatedAt.ToString("dd MMM yyyy")</td>
+            <td class="text-end"><a href="/Complaints/Details/@c.Id" class="btn btn-sm btn-outline-secondary">View</a></td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

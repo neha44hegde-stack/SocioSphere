@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "My Payments";
+    Layout = "_ResidentLayout";
+    var list = Model as List<SocioSphere.Core.Entities.Payment> ?? new();
+    var profile = ViewBag.Profile as SocioSphere.Core.Entities.ResidentProfile;
+    var total = (decimal)(ViewBag.TotalPaid ?? 0m);
+}
+<h1 class="page-title">My Payments</h1>
+
+@if (profile == null) {
+  <div class="card-ss"><div class="card-ss-body empty-state">
+    <div class="icon-lg">💳</div><h5>No flat linked</h5><p>Contact the admin to link your account.</p>
+  </div></div>
+} else {
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="icon">🏠</span>
+      <div class="label">My Flat</div>
+      <div class="value">@profile.Flat.FlatNumber</div>
+      <div class="meta">Building @profile.Flat.Building.Name</div>
+    </div>
+    <div class="stat-card accent">
+      <span class="icon">💳</span>
+      <div class="label">Total Paid</div>
+      <div class="value">₹@total.ToString("N0")</div>
+      <div class="meta">Across all bills</div>
+    </div>
+    <div class="stat-card info">
+      <span class="icon">🧾</span>
+      <div class="label">Payments</div>
+      <div class="value">@list.Count</div>
+      <div class="meta">Recorded transactions</div>
+    </div>
+  </div>
+
+  <div class="card-ss">
+    <div class="card-ss-header">
+      <span>Payment History</span>
+      <a href="/Bills" class="btn btn-sm btn-outline-secondary" style="display:none;"></a>
+    </div>
+    <div class="card-ss-body p-0">
+      @if (list.Count == 0) {
+        <div class="empty-state"><div class="icon-lg">💳</div><h5>No payments yet</h5><p>Once payments are recorded for your flat, they'll appear here.</p></div>
+      } else {
+        <table class="table-ss">
+          <thead><tr><th>Date</th><th>Bill Month</th><th>Amount</th><th>Method</th><th>Reference</th><th>Status</th></tr></thead>
+          <tbody>
+          @foreach (var p in list) {
+            <tr>
+              <td>@p.PaymentDate.ToString("dd MMM yyyy")</td>
+              <td><strong>@p.MaintenanceBill?.BillingMonth</strong></td>
+              <td><strong>₹@p.Amount.ToString("N0")</strong></td>
+              <td>@p.Method</td>
+              <td class="small text-muted">@(string.IsNullOrEmpty(p.TransactionReference) ? "—" : p.TransactionReference)</td>
+              <td><span class="badge bg-@(p.Status == SocioSphere.Core.Enums.PaymentStatus.SUCCESS ? "success" : p.Status == SocioSphere.Core.Enums.PaymentStatus.FAILED ? "danger" : "secondary")">@p.Status</span></td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+}

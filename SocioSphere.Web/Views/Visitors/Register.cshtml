@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Register Visitor";
+    Layout = User.IsInRole("Security") ? "_SecurityLayout" : "_AdminLayout";
+    var flats = ViewBag.Flats as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+    var expected = ViewBag.Expected as List<SocioSphere.Core.Entities.ExpectedVisitor>;
+}
+<h1 class="page-title">Register Visitor Entry</h1>
+@if (expected != null && expected.Count > 0) {
+  <div class="card-ss mb-3">
+    <div class="card-ss-header">Expected Today</div>
+    <div class="card-ss-body p-0">
+      <table class="table-ss mb-0">
+        <thead><tr><th>Name</th><th>Flat</th><th>Time</th><th>Purpose</th></tr></thead>
+        <tbody>
+        @foreach (var e in expected) {
+          <tr><td>@e.Name</td><td>@e.Flat?.FlatNumber</td><td>@(e.ExpectedTime?.ToString(@"hh\:mm") ?? "—")</td><td>@e.Purpose</td></tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}
+<form method="post" class="card-ss p-4" style="max-width:720px;">
+  @Html.AntiForgeryToken()
+  <div asp-validation-summary="All" class="text-danger mb-2"></div>
+  <div class="row g-3">
+    <div class="col-md-6"><label class="form-label">Name</label><input name="Name" value="@Model.Name" class="form-control" required /></div>
+    <div class="col-md-6"><label class="form-label">Phone</label><input name="Phone" value="@Model.Phone" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Flat</label><select name="FlatId" class="form-select" asp-items="flats" required><option value="">— Select —</option></select></div>
+    <div class="col-md-6"><label class="form-label">Type</label><select name="Type" class="form-select">
+      @foreach (var t in Enum.GetValues<SocioSphere.Core.Enums.VisitorType>()) { <option value="@t">@t</option> }
+    </select></div>
+    <div class="col-md-6"><label class="form-label">Vehicle</label><input name="VehicleNumber" value="@Model.VehicleNumber" class="form-control" /></div>
+    <div class="col-md-6"><label class="form-label">Purpose</label><input name="Purpose" value="@Model.Purpose" class="form-control" /></div>
+  </div>
+  <div class="mt-4"><button class="btn btn-accent">Check In</button><a href="/Visitors/History" class="btn btn-outline-secondary ms-2">Cancel</a></div>
+</form>
