@@ -28,5 +28,4 @@ A complete, role-based ASP.NET Core MVC application designed to digitize housing
 - **Resident:** `resident@sociosphere.local`
 - **Security:** `security@sociosphere.local`
 
-## 📸 Screenshots
-*(You can add screenshots here later by dragging and dropping images into this file!)*
+
